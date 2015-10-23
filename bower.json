@@ -1,6 +1,6 @@
 {
   "name": "sdpparser",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "SDP Parser (RFC 4566)",
   "author": "Adrian Ber",
   "license": "MIT",
@@ -16,7 +16,5 @@
   ],
   "dependencies": {
     "jscommon": ">=0.0.2"
-  },
-  "devDependencies": {
   }
 }
