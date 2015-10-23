@@ -235,11 +235,11 @@ var FORMATTERS = {
 		}
 		s += EOL;
 	}
-	s += format(media, ["type", "port", "protocol", "numberOfPorts", "formats"], MEDIA_OUTPUT_ORDER);
+	s += formatSdpSection(media, ["type", "port", "protocol", "numberOfPorts", "formats"], MEDIA_OUTPUT_ORDER);
 	return s;
 }
 , payloads: function(payload) {
-	return format(payload, ["id"]);
+	return formatSdpSection(payload, ["id"], ["rtp", "fmtp"]);
 }
 , rtpmap: function(rtp, parent) {
 	var s = parent.id + " " + rtp.codec + "/" + rtp.rate;
