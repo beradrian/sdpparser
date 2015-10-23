@@ -78,11 +78,10 @@ var aggregateSdp = function(sdpProperties) {
 	if (options.aggregatePayloads !== false) {
 		aggregatePayloads(sdp);
 	}
-
 	return sdp;
 };
 
-var aggregate = aggregateSdpProperties;
+var aggregate = aggregateSdp;
 
 var aggregatePayloads = function(sdp) {
 	if (!sdp.media || !sdp.media.length) {
@@ -112,19 +111,29 @@ var aggregatePayloads = function(sdp) {
 };
 
 var aggregatePayloadAttribute = function(payload, media, attr) {
-	if (media[attr] && !media[attr].find) {
+	if (media[attr] && !media[attr].push) {
 		media[attr] = [media[attr]];
 	}
 	if (media[attr]) {
-		payload[attr] = media[attr].find(function(element, index, array) {
-			return element.payload == payload.id;
-		});
+		payload[attr] = getPayload(media[attr], payload.id);
 	}
 	if (payload[attr]) {
 		delete payload[attr].payload;
 	} else {
 		delete payload[attr];
 	}
+};
+
+var getPayload = function(payloads, id) {
+	if (payloads.payload === id) {
+		return payloads;
+	}
+	for (var i = 0; i < payloads.length; i++) {
+		if (payloads[i].payload === id) {
+			return payloads[i];
+		}
+	}
+	return null;
 };
 
 var OUTPUT_ORDER = ["v", "o", "s", "i", "u", "e", "p", "c", "b", "t", "r", "z", "k", "a", "*", "m"];
@@ -277,7 +286,6 @@ sdp
 	{ 
 		lines.splice(0, 0, line);
 		var sdp = aggregate(lines);
-//console.log(parser.format(sdp));
 		return sdp;
 	};
 
