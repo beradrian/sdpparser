@@ -47,7 +47,9 @@ describe("SdpParser", function() {
 		expect(sdp.media.length).toBe(1);
 		expect(sdp.media[0].payloads[0].id).toBe(111);
 		expect(sdp.media[0].payloads[0].rtp.codec).toBe("opus");
-		expect(SdpParser.format(sdp)).toMatch(/v=0.*/g);
+		var sdpText = SdpParser.format(sdp);
+		expect(sdpText).toMatch(/v=0.*/g);
+		expect(sdpText).not.toMatch(/\[object Object\]/g);
 	});
 
 });

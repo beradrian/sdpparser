@@ -187,6 +187,8 @@ var formatSdpProperty = function(section, propertyName) {
 	}
 	// get the prefix of the property according to SDP specs
 	var prefix = SDP_TYPES[propertyName] !== undefined ? SDP_TYPES[propertyName] : propertyName;
+	// gets the formatter for the property
+	var formatter = FORMATTERS[propertyName] || FORMATTERS[prefix] || FORMATTERS["*"];
 	// if the prefix is one single character, then it is a SDP type
 	// otherwise it is a SDP attribute
 	if (prefix.length > 1) {
@@ -202,8 +204,6 @@ var formatSdpProperty = function(section, propertyName) {
 		prefix += "=";
 	}
 
-	// gets the formatter for the property
-	var formatter = FORMATTERS[propertyName] || FORMATTERS[prefix] || FORMATTERS["*"];
 	if (section[propertyName].push) {
 		var s = "";
 		for (var i = 0; i < section[propertyName].length; i++) {
