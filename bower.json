@@ -1,0 +1,22 @@
+{
+  "name": "sdpparser",
+  "version": "0.1.0",
+  "description": "SDP Parser (RFC 4566)",
+  "author": "Adrian Ber",
+  "license": "MIT",
+  "homepage": "https://github.com/beradrian/sdpparser",
+  "main": "src/main/js/SdpParser.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "docs",
+    "Gruntfile.js",
+    "index.html",
+    "package.json"
+  ],
+  "dependencies": {
+    "jscommon": ">=0.0.2"
+  },
+  "devDependencies": {
+  }
+}
