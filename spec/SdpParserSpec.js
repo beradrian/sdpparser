@@ -39,6 +39,17 @@ describe("SdpParser", function() {
 		expect(s).toEqual("v=0\r\nr=1d 30m 100 1h\r\n");
 	});
 
+	it("should parse timezones", function() {
+		var sdp = SdpParser.parse("v=0\r\nz=2882844526 -1h 2898848070 0 2898850010 200s");
+		expect(sdp.version).toBe(0);
+		expect(sdp.timezones[0].adjustment).toEqual(2882844526);
+		expect(sdp.timezones[0].offset).toEqual(-3600);
+		expect(sdp.timezones[1].adjustment).toEqual(2898848070);
+		expect(sdp.timezones[1].offset).toEqual(0);
+		expect(sdp.timezones[2].adjustment).toEqual(2898850010);
+		expect(sdp.timezones[2].offset).toEqual(200);
+	});
+
 	it("should parse attribute", function() {
 		var sdp = SdpParser.parse("v=0\r\na=group:BUNDLE audio video\r\n");
 		expect(sdp.version).toBe(0);

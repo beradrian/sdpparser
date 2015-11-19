@@ -318,13 +318,13 @@ versionNumber
 	= n: number { return n; };
 
 number
-	= n: ([0-9]+) { return guessType(text()); };
+	= n: ([\-0-9]+) { return guessType(text()); };
 
 str
 	= s: ([^ \t\n\r]+) { return text();}
 
 SdpLine
-	= version / origin / media / connection / timing / repeat / bandwidth / attribute / otherType;
+	= version / origin / media / connection / timing / repeat / timezones / bandwidth / attribute / otherType;
 
 version
 	= "v" eq v: versionNumber { return {version: v}; };
@@ -408,6 +408,13 @@ timing
 repeat
 	= "r" eq interval:duration _ activeDuration:duration offsets:(_ d:duration {return d;})*
 	{ return {repeat: {interval: interval, activeDuration: activeDuration, offsets: offsets}}};
+
+timezones
+	= "z" eq t:timezone ts:(_ t:timezone {return t;})+
+	{ return {timezones: [t].concat(ts)};};
+
+timezone
+	= adjustment:number _ offset:duration {return {adjustment: adjustment, offset: offset}};
 
 attribute
 	= rtpmapAttribute / fmtpAttribute / valueAttribute / propertyAttribute;
