@@ -2,10 +2,13 @@
 
 {
 var jsCommon = require("jscommon");
-var guessType = jsCommon.guessType;
+var guessType = jsCommon.guessType, isInt = jsCommon.isInt;
 
 /** The offset of the NTP time compared to Unix time. */
 var NTP_OFFSET = 2208988800;
+
+var DURATIONS = { "d": 86400, "h": 3600, "m": 60, "s": 1};
+DURATIONS.FORMAT_ORDER = ["d", "h", "m"];
 
 /** End of line. */
 var EOL = "\r\n";
@@ -23,7 +26,7 @@ var SDP_TYPES = {
 	, m: "media"
 	, b: "bandwidth"
 	, t: "timing"
-	, r: "repeat" // TODO parse specific
+	, r: "repeat"
 	, z: "timezones" // TODO parse specific
 	, k: "encryptionKey" // TODO parse specific
 	, cat: "category"
@@ -230,6 +233,22 @@ var FORMATTERS = {
 , timing: function(timing) {
 	return timing.start + " " + timing.stop;
 }
+, duration: function(duration) {
+	for (var i = 0, n = DURATIONS.FORMAT_ORDER.length; i < n; i++) {
+		var x = duration / DURATIONS[DURATIONS.FORMAT_ORDER[i]];
+		if (isInt(x)) {
+			return x + DURATIONS.FORMAT_ORDER[i];
+		}
+	}
+	return duration;
+}
+, repeat: function(repeat) {
+	var s = FORMATTERS.duration(repeat.interval) + " " + FORMATTERS.duration(repeat.activeDuration);
+	for (var i = 0, n = repeat.offsets.length; i < n; i++) {
+		s +=  " " + FORMATTERS.duration(repeat.offsets[i]);
+	}
+	return s;
+}
 , media: function(media) {
 	var s = media.type 
 			+ " " + media.port 
@@ -305,7 +324,7 @@ str
 	= s: ([^ \t\n\r]+) { return text();}
 
 SdpLine
-	= version / origin / media / connection / timing / bandwidth / attribute / otherType;
+	= version / origin / media / connection / timing / repeat / bandwidth / attribute / otherType;
 
 version
 	= "v" eq v: versionNumber { return {version: v}; };
@@ -313,6 +332,11 @@ version
 time
 	= t: number { return options.useUnixTimes ? t - NTP_OFFSET : t;};
 
+duration
+	= x:number p:("d" / "h" / "m" / "s") { return x * DURATIONS[p];} 
+	/ x:number { return x;};
+
+	
 origin
 	= "o" eq 
 	username:str 
@@ -381,9 +405,9 @@ bandwidth
 timing
 	= "t" eq start:time _ stop:time {return {timing:{start: start, stop: stop}}};
 
-//repeat
-// = "r" eq interval: time _ activeDuration: number _ offsets: (time +)
-// { return {repeat: {interval: interval, activeDuration: activeDuration, offsets: offsets}}};
+repeat
+	= "r" eq interval:duration _ activeDuration:duration offsets:(_ d:duration {return d;})*
+	{ return {repeat: {interval: interval, activeDuration: activeDuration, offsets: offsets}}};
 
 attribute
 	= rtpmapAttribute / fmtpAttribute / valueAttribute / propertyAttribute;

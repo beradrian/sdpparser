@@ -10,6 +10,35 @@ describe("SdpParser", function() {
 		expect(SdpParser.format(sdp)).toEqual("v=0\r\n");
 	});
 
+	it("should parse repeat", function() {
+		var sdp = SdpParser.parse("v=0\r\nr=1d 30m 100 2h");
+		expect(sdp.version).toBe(0);
+		expect(sdp.repeat).toBeDefined();
+		expect(sdp.repeat.interval).toEqual(86400);
+		expect(sdp.repeat.activeDuration).toEqual(1800);
+		expect(sdp.repeat.offsets).toEqual([100, 7200]);
+	});
+
+	it("should parse repeat without offsets", function() {
+		var sdp = SdpParser.parse("v=0\r\nr=1d 30m");
+		expect(sdp.version).toBe(0);
+		expect(sdp.repeat).toBeDefined();
+		expect(sdp.repeat.interval).toEqual(86400);
+		expect(sdp.repeat.activeDuration).toEqual(1800);
+		expect(sdp.repeat.offsets).toEqual([]);
+	});
+
+	it("should format compact repeat", function() {
+		var sdp = SdpParser.parse("v=0\r\nr=1d 1800 100 3600");
+		expect(sdp.version).toBe(0);
+		expect(sdp.repeat).toBeDefined();
+		expect(sdp.repeat.interval).toEqual(86400);
+		expect(sdp.repeat.activeDuration).toEqual(1800);
+		expect(sdp.repeat.offsets).toEqual([100, 3600]);
+		var s = SdpParser.format(sdp);
+		expect(s).toEqual("v=0\r\nr=1d 30m 100 1h\r\n");
+	});
+
 	it("should parse attribute", function() {
 		var sdp = SdpParser.parse("v=0\r\na=group:BUNDLE audio video\r\n");
 		expect(sdp.version).toBe(0);
