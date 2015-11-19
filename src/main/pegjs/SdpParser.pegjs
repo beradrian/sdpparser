@@ -27,8 +27,8 @@ var SDP_TYPES = {
 	, b: "bandwidth"
 	, t: "timing"
 	, r: "repeat"
-	, z: "timezones" // TODO parse specific
-	, k: "encryptionKey" // TODO parse specific
+	, z: "timezones"
+	, k: "encryptionKey"
 	, cat: "category"
 	, keywds: "keywords"
 	, ptime: "packetTime"
@@ -207,7 +207,7 @@ var formatSdpProperty = function(section, propertyName) {
 		prefix += "=";
 	}
 
-	if (section[propertyName].push) {
+	if (propertyName !== "timezones" && section[propertyName].push) {
 		var s = "";
 		for (var i = 0; i < section[propertyName].length; i++) {
 			s += prefix + formatter(section[propertyName][i], section[propertyName]) + (prefix.length ? EOL : "");
@@ -234,6 +234,9 @@ var FORMATTERS = {
 	return timing.start + " " + timing.stop;
 }
 , duration: function(duration) {
+	if (duration === 0) {
+		return duration;
+	}
 	for (var i = 0, n = DURATIONS.FORMAT_ORDER.length; i < n; i++) {
 		var x = duration / DURATIONS[DURATIONS.FORMAT_ORDER[i]];
 		if (isInt(x)) {
@@ -248,6 +251,16 @@ var FORMATTERS = {
 		s +=  " " + FORMATTERS.duration(repeat.offsets[i]);
 	}
 	return s;
+}
+, timezones: function(timezones) {
+	var s = "";
+	for (var i = 0, n = timezones.length; i < n; i++) {
+		s += (i > 0 ? " " : "") + timezones[i].adjustment + " " + FORMATTERS.duration(timezones[i].offset);
+	}
+	return s;
+}
+, encryptionKey: function(encryptionKey) {
+	return encryptionKey.method + (encryptionKey.key ? ":" + encryptionKey.key : "");
 }
 , media: function(media) {
 	var s = media.type 
@@ -324,7 +337,7 @@ str
 	= s: ([^ \t\n\r]+) { return text();}
 
 SdpLine
-	= version / origin / media / connection / timing / repeat / timezones / bandwidth / attribute / otherType;
+	= version / origin / media / connection / timing / repeat / timezones / encryptionKey / bandwidth / attribute / otherType;
 
 version
 	= "v" eq v: versionNumber { return {version: v}; };
@@ -415,6 +428,10 @@ timezones
 
 timezone
 	= adjustment:number _ offset:duration {return {adjustment: adjustment, offset: offset}};
+
+encryptionKey
+	= "k" eq method:([^:\r\n]+ {return text();}) ":" key:str { return {encryptionKey: {method: method, key: key}};}
+	/ "k" eq method:str { return {encryptionKey: {method: method}};};
 
 attribute
 	= rtpmapAttribute / fmtpAttribute / valueAttribute / propertyAttribute;

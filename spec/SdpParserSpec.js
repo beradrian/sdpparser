@@ -48,6 +48,19 @@ describe("SdpParser", function() {
 		expect(sdp.timezones[1].offset).toEqual(0);
 		expect(sdp.timezones[2].adjustment).toEqual(2898850010);
 		expect(sdp.timezones[2].offset).toEqual(200);
+		var s = SdpParser.format(sdp);
+		expect(s).toEqual("v=0\r\nz=2882844526 -1h 2898848070 0 2898850010 200\r\n");
+	});
+
+	it("should parse encryption keys", function() {
+		var sdp = SdpParser.parse("v=0\r\nk=prompt\r\nk=clear:123");
+		expect(sdp.version).toBe(0);
+		expect(sdp.encryptionKey[0].method).toEqual("prompt");
+		expect(sdp.encryptionKey[0].key).toBe(undefined);
+		expect(sdp.encryptionKey[1].method).toEqual("clear");
+		expect(sdp.encryptionKey[1].key).toEqual("123");
+		var s = SdpParser.format(sdp);
+		expect(s).toEqual("v=0\r\nk=prompt\r\nk=clear:123\r\n");
 	});
 
 	it("should parse attribute", function() {
