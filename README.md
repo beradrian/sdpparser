@@ -4,7 +4,7 @@ A parser for SDP partially compliant with [RFC 4566](https://tools.ietf.org/html
 ## Installation
 Using 
 - *npm*: `npm install sdpparser`. See below an example using `require`.
-- directly: download the archive from releases and include `SdpParser.js`
+- directly: download the archive from releases and include `SdpParser.js` and `jscommon.js`
 
 This can be used either from a browser or on the server side.
 
