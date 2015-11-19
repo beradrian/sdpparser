@@ -1,6 +1,6 @@
 {
 	"name": "sdpparser"
-	, "version": "0.0.1"
+	, "version": "0.0.2"
 	, "description": "SdpParser - JavaScript parser for SDP (RFC 4566)"
 	, "author": {
 		"name": "Adrian Ber",
