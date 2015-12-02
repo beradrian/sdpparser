@@ -21,8 +21,7 @@
 	}
 	, "scripts": {
 		"pegjs": "node_modules/.bin/pegjs src/main/pegjs/SdpParser.pegjs src/main/js/SdpParser.js"
-		, "test": "node_modules/.bin/jasmine"
+		, "test": "npm run pegjs & jasmine"
 		, "postinstall": "npm run pegjs"
-		, "prepublish": "npm run pegjs & npm test"
 	}
 }

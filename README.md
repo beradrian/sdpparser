@@ -1,3 +1,8 @@
+![Bower](https://img.shields.io/bower/v/sdpparser.svg) [![NPM](https://img.shields.io/npm/v/sdpparser.svg)](https://www.npmjs.com/package/sdpparser) ![License](https://img.shields.io/npm/l/sdpparser.svg)
+[![Build Status](https://travis-ci.org/beradrian/sdpparser.png)](https://travis-ci.org/beradrian/sdpparser)
+
+[![NPM](https://nodei.co/npm/sdpparser.png)](https://nodei.co/npm/sdpparser/)
+
 # SdpParser
 A parser for SDP partially compliant with [RFC 4566](https://tools.ietf.org/html/rfc4566#page-7). More about [Sesssion Description Protocol](http://en.wikipedia.org/wiki/Session_Description_Protocol). Another interesting RFC is the [RFC draft for Opus codec](https://tools.ietf.org/html/draft-spittka-payload-rtp-opus-03). This parser was written to be used in conjuction with WebRTC. This way you can easily modify settings like codec parameters.
 
