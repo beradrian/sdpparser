@@ -1,6 +1,6 @@
 {
 	"name": "sdpparser"
-	, "version": "0.0.2"
+	, "version": "0.0.3"
 	, "description": "SdpParser - JavaScript parser for SDP (RFC 4566)"
 	, "author": {
 		"name": "Adrian Ber",
@@ -16,11 +16,11 @@
 		"jscommon": "beradrian/jscommon"
 	}
 	, "devDependencies" : {
-		"pegjs": ">=0.9.0"
+		"pegjs": ">=0.10.0"
 		, "jasmine": ">=2.3.1"
 	}
 	, "scripts": {
-		"pegjs": "node_modules/.bin/pegjs src/main/pegjs/SdpParser.pegjs src/main/js/SdpParser.js"
+		"pegjs": "node_modules/.bin/pegjs src/main/pegjs/SdpParser.pegjs -o src/main/js/SdpParser.js"
 		, "test": "npm run pegjs & jasmine"
 		, "postinstall": "npm run pegjs"
 	}
