@@ -1,13 +1,13 @@
 {
 	"name": "sdpparser"
-	, "version": "0.0.3"
+	, "version": "0.0.4"
 	, "description": "SdpParser - JavaScript parser for SDP (RFC 4566)"
 	, "author": {
 		"name": "Adrian Ber",
 		"email": "beradrian@yahoo.com"
 	}
 	, "license": "MIT"
-	, "repository" : { 
+	, "repository" : {
 		"type" : "git"
 		, "url" : "https://github.com/beradrian/sdpparser.git"
 	}
@@ -20,7 +20,7 @@
 		, "jasmine": ">=2.3.1"
 	}
 	, "scripts": {
-		"pegjs": "node_modules/.bin/pegjs src/main/pegjs/SdpParser.pegjs -o src/main/js/SdpParser.js"
+		"pegjs": "node_modules/.bin/pegjs -o src/main/js/SdpParser.js src/main/pegjs/SdpParser.pegjs"
 		, "test": "npm run pegjs & jasmine"
 		, "postinstall": "npm run pegjs"
 	}
