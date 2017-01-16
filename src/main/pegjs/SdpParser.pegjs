@@ -59,7 +59,7 @@ var aggregateSdpProperties = function(sdpProperties) {
 					}
 					obj[p].push(sdpProperties[i][p]);
 				} else {
-					obj[p] = sdpProperties[i][p];	
+					obj[p] = sdpProperties[i][p];
 				}
 				if (options.useMediaSections !== false && p == SDP_TYPES["m"]) {
 					obj = sdpProperties[i][p];
@@ -90,13 +90,13 @@ var aggregatePayloads = function(sdp) {
 	if (!sdp.media || !sdp.media.length) {
 		return sdp;
 	}
-	for (var i = 0; i < sdp.media.length; i++) { 
+	for (var i = 0; i < sdp.media.length; i++) {
 		var m = sdp.media[i];
 		if (!m.payloads) {
 			continue;
 		}
 		var payloads = [];
-		for (var j = 0; j < m.payloads.length; j++) { 
+		for (var j = 0; j < m.payloads.length; j++) {
 			var payload = {id: m.payloads[j]};
 			aggregatePayloadAttribute(payload, m, "rtp");
 			aggregatePayloadAttribute(payload, m, "fmtp");
@@ -169,16 +169,16 @@ parser.format = formatSdp;
 var formatSdpSection = function(section, excluded, order) {
 	var s = "";
 
-	jsCommon.forEach(section, 
+	jsCommon.forEach(section,
 			function(value, property, section) {
 				s += formatSdpProperty(section, property);
-			}, 
+			},
 			{
 				blacklist: excluded ? function(p) { return excluded.indexOf(p) >= 0 || excluded.indexOf(SDP_TYPES[p]) >= 0;} : null,
 				comparator: ordering(order)
 			});
 
-	// remove empty lines - it seems that browsers cannot deal with empty lines in SDP, even at the end 
+	// remove empty lines - it seems that browsers cannot deal with empty lines in SDP, even at the end
 	s = s.replace(/[\r\n]{2,}/g, EOL);
 	return s;
 };
@@ -224,8 +224,8 @@ var FORMATTERS = {
 	return value.toString();
 }
 , origin: function(origin) {
-	return origin.username + " " + origin.sessionId 
-			+ " " + origin.sessionVersion 
+	return origin.username + " " + origin.sessionId
+			+ " " + origin.sessionVersion
 			+ " " + origin.networkType
 			+ " " + origin.addressType
 			+ " " + origin.unicastAddress;
@@ -263,8 +263,8 @@ var FORMATTERS = {
 	return encryptionKey.method + (encryptionKey.key ? ":" + encryptionKey.key : "");
 }
 , media: function(media) {
-	var s = media.type 
-			+ " " + media.port 
+	var s = media.type
+			+ " " + media.port
 			+ (media.numberOfPorts ? "/" + media.numberOfPorts : "")
 			+ " " + media.protocol;
 	if (media.formats) {
@@ -314,8 +314,8 @@ var FORMATTERS = {
 
 
 sdp
-	= line:(line:SdpLine {return line;}) lines:(_eol line:SdpLine {return line;})* _eol*
-	{ 
+	= line:(line:SdpLine {return line;}) lines:(_eol line2:SdpLine {return line2;})* _eol*
+	{
 		lines.splice(0, 0, line);
 		var sdp = aggregate(lines);
 		return sdp;
@@ -346,21 +346,21 @@ time
 	= t: number { return options.useUnixTimes ? t - NTP_OFFSET : t;};
 
 duration
-	= x:number p:("d" / "h" / "m" / "s") { return x * DURATIONS[p];} 
+	= x:number p:("d" / "h" / "m" / "s") { return x * DURATIONS[p];}
 	/ x:number { return x;};
 
-	
+
 origin
-	= "o" eq 
-	username:str 
+	= "o" eq
+	username:str
 	_ sessionId:str
 	_ sessionVersion:versionNumber
 	_ networkType:str
 	_ addressType:str
-	_ unicastAddress:str 
+	_ unicastAddress:str
 	{
 		var o = {
-				username: username, 
+				username: username,
 				sessionId: sessionId,
 				sessionVersion: sessionVersion,
 				networkType: networkType,
@@ -373,11 +373,11 @@ origin
 	};
 
 connection
-	= "c" eq 
+	= "c" eq
 	networkType:str
 	_ addressType:str
 	_ connectionAddress: str
-	{ 
+	{
 		return {connection: {
 				networkType: networkType,
 				addressType: addressType,
@@ -386,8 +386,8 @@ connection
 	};
 
 media
-	= "m" eq type:str 
-	_ port:number 
+	= "m" eq type:str
+	_ port:number
 	numberOfPorts:("/" n:number {return n;}) ?
 	_ protocol:([^ \t]+ {return text();})
 	formats:(_ format:str { return format;})+
@@ -423,7 +423,7 @@ repeat
 	{ return {repeat: {interval: interval, activeDuration: activeDuration, offsets: offsets}}};
 
 timezones
-	= "z" eq t:timezone ts:(_ t:timezone {return t;})+
+	= "z" eq t:timezone ts:(_ t2:timezone {return t2;})+
 	{ return {timezones: [t].concat(ts)};};
 
 timezone
@@ -437,7 +437,7 @@ attribute
 	= rtpmapAttribute / fmtpAttribute / valueAttribute / propertyAttribute;
 
 rtpmapAttribute
-	= "a" eq "rtpmap" ":" payload:number 
+	= "a" eq "rtpmap" ":" payload:number
 	_ codec:([^/]+ {return text();})
 	"/" rate:number codecParams:("/" params:str {return guessType(params);})?
 	{
@@ -453,7 +453,7 @@ rtpmapAttribute
 	};
 
 fmtpAttribute
-	= "a" eq "fmtp" ":" payload:number 
+	= "a" eq "fmtp" ":" payload:number
 	_ params:formatParameters
 	{
 		return { fmtp: {
@@ -475,30 +475,30 @@ formatParameters
 	/ config:[^\r\n]+ { return text();};
 
 formatParameter
-	= name:([^=;\r\n]+ {return text()}) 
-	eq value:([^;\r\n]+ {return guessType(text());}) 
+	= name:([^=;\r\n]+ {return text()})
+	eq value:([^;\r\n]+ {return guessType(text());})
 	{ var param = {}; param[name] = value; return param;}
 
 propertyAttribute
 	= "a" eq property: attributeName
 	{
-		var p = {}; 
-		p[property] = true; 
+		var p = {};
+		p[property] = true;
 		return p;
 	}
 
 valueAttribute
 	= "a" eq property: attributeName ":" value:([^\n\r]+ {return guessType(text());})
 	{
-		var p = {}; 
-		p[property] = value; 
+		var p = {};
+		p[property] = value;
 		return p;
 	}
 
 attributeName
 	= ([^\n\r:]+)
 	{
-		var name = text(); 
+		var name = text();
 		if (options["useLongNames"] !== false && SDP_TYPES[name]) {
 			return SDP_TYPES[name];
 		}
@@ -506,8 +506,8 @@ attributeName
 	};
 
 otherType
-	= type: [a-z] eq value: ([^\r\n]+ {return text();}) 
-	{ 
+	= type: [a-z] eq value: ([^\r\n]+ {return text();})
+	{
 		var t = {};
 		t[SDP_TYPES[type] ? SDP_TYPES[type] : type] = value;
 		return t;

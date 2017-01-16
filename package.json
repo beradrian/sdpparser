@@ -1,6 +1,6 @@
 {
 	"name": "sdpparser"
-	, "version": "0.0.4"
+	, "version": "0.0.6"
 	, "description": "SdpParser - JavaScript parser for SDP (RFC 4566)"
 	, "author": {
 		"name": "Adrian Ber",
@@ -16,7 +16,7 @@
 		"jscommon": "beradrian/jscommon"
 	}
 	, "devDependencies" : {
-		"pegjs": ">=0.10.0"
+		"pegjs": "latest"
 		, "jasmine": ">=2.3.1"
 	}
 	, "scripts": {
